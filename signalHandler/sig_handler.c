@@ -1,3 +1,14 @@
+/*
+ * A simple program which registers a signal handler function with kernel 
+ * using the signal utility. The signal handler handles the SIGINT and SIGHUP signals.
+ *
+ * Usage:
+ *  Compile and run this program.
+ *  It prints the PID. Use this pid to send the signals.
+ *
+ *  kill -HUP <PID>
+ *  kill -SIGINT <PID>
+ */
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -9,6 +20,7 @@ void sig_handler(int signo)
     {
         case SIGINT:
         {
+            // Printfs are a strict no no in signal handlers as they are not reentran or thread safe.
             printf("Caught SIGINT, exiting now\n");
             exit(0);
         }
@@ -24,15 +36,12 @@ void sig_handler(int signo)
             printf("Error: Caught the wrong signal");
             break;
     }
-    if(signo == SIGINT)
-    {
-        //Printf is generally not safe to use in a signal handler as it is not reentrant.
-        printf("SIGINT signal received\n");
-    }
 }
 
 int main()
 {
+    printf("My PID is : %d.\n\n", getpid());
+
     if(signal(SIGINT, sig_handler) == SIG_ERR)
     {
         printf("Error: Cannot catch SIGINT.\n"); //Should never happen
