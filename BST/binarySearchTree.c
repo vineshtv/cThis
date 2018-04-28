@@ -8,6 +8,7 @@ struct Node
     struct Node* right;
 };
 
+//Insert into the BST
 struct Node* insert(struct Node* node, int data)
 {
     if(!node)
@@ -31,6 +32,66 @@ struct Node* insert(struct Node* node, int data)
 
     //This return is uneccessary
     return node;
+}
+
+struct Node* getMinNode(struct Node* node)
+{
+    struct Node* curr = node;
+    
+    while(curr->left)
+    {
+        curr = curr->left;
+    }
+
+    return(curr);
+}
+
+//delete a key from the BST
+struct Node* deleteNode(struct Node* root, int data)
+{
+    if(!root)
+    {
+        return root;
+    }
+
+    //Traverse and find the Node with the key to be deleted
+    if(data < root->data)
+    {
+        root->left = deleteNode(root->left, data);
+    }
+    else if (data > root->data)
+    {
+        root->right = deleteNode(root->right, data);
+    }
+    else
+    {
+        //Node with the key is found.
+        /*
+         * Steps to delete the node are as follows
+         * 1. If the Node does not have any child, just delete the node and return NULL.
+         * 2. If the Node has only one child, then copy the child to the node and delete the child.
+         * 3. If the Node had two childs, then find the in-order successor to the node, copy that succesor to the node and delete the successor.
+         */
+        if(root->left == NULL)
+        {
+            struct Node* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right == NULL)
+        {
+            struct Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // Node has two childs.
+        struct Node* temp = getMinNode(root->right);
+
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return(root);
 }
 
 //Inorder traversal always prints the number is the sorted order in a BST
@@ -61,6 +122,10 @@ int main(int argc, char** argv)
     insert(root, 3);
 
     printf("In Order Traversal = ");
+    inOrderTraverse(root);
+    printf("\n");
+
+    root = deleteNode(root, 9);
     inOrderTraverse(root);
     printf("\n");
     return 0;
