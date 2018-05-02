@@ -1,3 +1,6 @@
+/*
+ *  A function which prints level order traversal of a tree
+ */
 #include<stdio.h>
 #include<stdlib.h>
 struct Node
